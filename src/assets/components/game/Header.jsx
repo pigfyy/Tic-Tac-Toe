@@ -28,8 +28,8 @@ function Header({ game, handleRestart }) {
             onClick={handleRestart}
             className="flex h-10 w-10 justify-center rounded-md bg-neutral-200 shadow-neutralShadowThin active:bg-neutral-100"
           >
-            <div className="flex w-5/12">
-              <img src={restartIcon} alt="restart icon" className="m-auto" />
+            <div className="h-5/12 m-auto flex w-5/12">
+              <img src={restartIcon} alt="restart icon" />
             </div>
           </button>
         </div>
