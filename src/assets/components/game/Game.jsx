@@ -1,29 +1,26 @@
 import Header from "./Header";
 import Board from "./Board";
+import Footer from "./Footer";
 
-export default function Game({
-  game,
-  handleBoardClick,
-  handleMouseOver,
-  handleMouseOut,
-}) {
+export default function Game({ game, numOfWins, handleBoardClick }) {
   const handleRestart = () => {
-    console.log("HI");
+    console.log(game);
   };
 
   return (
-    <div className="min-h-screen bg-neutral-900">
-      <div className="mx-auto grid grid-cols-3 gap-5 p-4">
+    <div className="grid min-h-screen place-items-center bg-neutral-900">
+      <div className="mx-auto w-11/12 max-w-L py-4">
         {/* Header */}
         <Header game={game} handleRestart={handleRestart} />
-        {/* Game-Board */}
-        <Board
-          game={game}
-          handleBoardClick={(i, j) => handleBoardClick(i, j)}
-          handleMouseOver={(i, j) => handleMouseOver(i, j)}
-          handleMouseOut={(i, j) => handleMouseOut(i, j)}
-        />
-        {/* Footer */}
+        <div className="flex flex-col gap-5">
+          {/* Game-Board */}
+          <Board
+            game={game}
+            handleBoardClick={(i, j) => handleBoardClick(i, j)}
+          />
+          {/* Footer */}
+          <Footer game={game} numOfWins={numOfWins} />
+        </div>
       </div>
     </div>
   );

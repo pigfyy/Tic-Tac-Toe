@@ -36,6 +36,9 @@ module.exports = {
         L: "28.75rem",
         "2XS": "2.5rem",
       },
+      minHeight: {
+        "4REM": "4rem",
+      },
     },
   },
   plugins: [],
