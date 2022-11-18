@@ -33,4 +33,8 @@
   .text-shadow-none {
     text-shadow: none;
   }
+
+  .min-h-min600 {
+    min-height: max(100vh, 600px)
+  }
 }

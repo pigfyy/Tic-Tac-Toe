@@ -23,7 +23,7 @@ export default function ({ game, handleBoardClick }) {
 
       return (
         <button
-          className="group flex justify-center rounded-md bg-neutral-700 py-7 shadow-darkBlueShadow"
+          className="group flex aspect-square justify-center rounded-sxl bg-neutral-700 shadow-darkBlueShadow md:rounded-2xl"
           onClick={() => handleBoardClick(i, j)}
           key={uuid()}
         >

@@ -47,18 +47,18 @@ export default function ({ game, numOfWins }) {
       return (
         <li key={uuid()}>
           <button
-            className={`flex h-full w-full flex-row justify-center space-x-2 rounded-xl px-2 ${values.bg}`}
+            className={`flex h-full w-full flex-row justify-center space-x-2 rounded-sxl px-2 md:rounded-2xl ${values.bg}`}
           >
             <div className="flex min-h-4REM flex-col justify-center py-2">
               <div>
-                <p className="my-auto text-XS font-medium leading-tight tracking-wide text-neutral-900">
+                <span className="my-auto text-XS font-medium leading-tight tracking-0.75 text-neutral-900">
                   {values.text}
-                </p>
+                </span>
               </div>
               <div>
-                <p className="text-S font-bold leading-tight tracking-wider text-neutral-900">
+                <span className="text-S font-bold leading-tight tracking-1.25 text-neutral-900">
                   {num}
-                </p>
+                </span>
               </div>
             </div>
           </button>

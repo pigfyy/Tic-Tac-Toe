@@ -6,7 +6,7 @@ import iconODark from "../../imgs/new-game-icons/icon-o-dark.svg";
 export default function (props) {
   return (
     <div className="space-y-5 rounded-2xl bg-neutral-700 p-5 shadow-darkBlueShadow">
-      <h1 className="text-shadow-3xl text-center text-XS tracking-wider text-neutral-200">
+      <h1 className="text-shadow-3xl text-center text-XS tracking-1 text-neutral-200">
         PICK PLAYER 1'S MARK
       </h1>
       <div className="rounded-2xl bg-neutral-900 p-2">
@@ -43,7 +43,7 @@ export default function (props) {
           />
         </button>
       </div>
-      <p className="text-center text-2XS tracking-wider text-neutral-200 opacity-50">
+      <p className="text-center text-2XS tracking-0.875 text-neutral-200 opacity-50">
         REMEMBER : X GOES FIRST
       </p>
     </div>

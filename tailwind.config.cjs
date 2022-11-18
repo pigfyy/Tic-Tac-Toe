@@ -32,12 +32,30 @@ module.exports = {
       "2xl": "0px 4px 4px 0px #00000040",
     },
     extend: {
+      width: {
+        "1/7": "40%",
+      },
       maxWidth: {
         L: "28.75rem",
         "2XS": "2.5rem",
+        "3XS": "3.25rem",
       },
       minHeight: {
         "4REM": "4rem",
+      },
+      borderRadius: {
+        sxl: "0.625rem",
+      },
+      lineHeight: {
+        4.5: "1.125rem",
+      },
+      letterSpacing: {
+        0.75: "0.046875rem",
+        0.875: "0.0546875rem",
+        1: "0.0625rem",
+        1.25: "0.078125rem",
+        1.5: "0.09375rem",
+        2.5: "0.15625rem",
       },
     },
   },
