@@ -1,5 +1,3 @@
-import Buttons from "../Buttons";
-
 export default function (props) {
   return (
     <section className="flex flex-col space-y-4">
@@ -16,7 +14,7 @@ export default function (props) {
         onClick={() => props.startGame(false)}
       >
         <p className="text-XS font-bold uppercase tracking-1 text-neutral-900">
-          NEW GAME (VS CPU)
+          NEW GAME (VS PLAYER)
         </p>
       </button>
     </section>

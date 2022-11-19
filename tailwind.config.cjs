@@ -32,11 +32,12 @@ module.exports = {
       "2xl": "0px 4px 4px 0px #00000040",
     },
     extend: {
-      width: {
-        "1/7": "40%",
+      flexBasis: {
+        test: "7%",
       },
       maxWidth: {
         L: "28.75rem",
+        M: "16.66667rem",
         "2XS": "2.5rem",
         "3XS": "3.25rem",
       },
