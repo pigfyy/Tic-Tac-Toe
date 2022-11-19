@@ -27,7 +27,7 @@ export default function ({ game, handleBoardClick }) {
           onClick={() => handleBoardClick(i, j)}
           key={uuid()}
         >
-          <div className="grid w-5/12 place-items-center">
+          <div className="my-auto w-5/12">
             <img
               src={image}
               alt={cell === null ? "empty cell" : cell}
