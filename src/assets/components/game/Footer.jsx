@@ -1,6 +1,27 @@
 import { v4 as uuid } from "uuid";
+import store from "../../../store";
 
-export default function ({ game, numOfWins }) {
+export default function () {
+  const game = {
+    player1Mark: "O",
+    isStarted: false,
+    isVsCpu: false,
+    isXTurn: true,
+    board: [[], [], []],
+    banner: {
+      isShown: false,
+      isOver: false,
+      isWinnerX: null,
+    },
+  };
+
+  const [isVsCpu, player1Mark] = store.useGameStore((state) => [
+    state.isVsCpu,
+    state.player1Mark,
+  ]);
+
+  const numOfWins = store.useWinCountsStore((state) => state);
+
   const footerBlocks = (() => {
     const winCounts = game.isVsCpu ? numOfWins.pvc : numOfWins.pvp;
     return winCounts.map((num, i) => {
@@ -9,11 +30,11 @@ export default function ({ game, numOfWins }) {
           case 0:
             return {
               bg: "bg-aqua-600",
-              text: game.isVsCpu
-                ? game.player1Mark === "X"
+              text: isVsCpu
+                ? player1Mark === "X"
                   ? "X (YOU)"
                   : "X (CPU)"
-                : game.player1Mark === "X"
+                : player1Mark === "X"
                 ? "X (P1)"
                 : "X (P2)",
             };
@@ -27,11 +48,11 @@ export default function ({ game, numOfWins }) {
           case 2:
             return {
               bg: "bg-orange-600",
-              text: game.isVsCpu
-                ? game.player1Mark === "O"
+              text: isVsCpu
+                ? player1Mark === "O"
                   ? "O (YOU)"
                   : "O (CPU)"
-                : game.player1Mark === "O"
+                : player1Mark === "O"
                 ? "O (P1)"
                 : "O (P2)",
             };

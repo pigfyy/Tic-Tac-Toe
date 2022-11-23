@@ -1,8 +1,31 @@
 import iconO from "../../imgs/game-icons/icon-o.svg";
 import iconX from "../../imgs/game-icons/icon-x.svg";
 
-export default function ({ game, handleEndScreenClick }) {
-  const banner = game.banner;
+import store from "../../../store";
+
+export default function () {
+  const [
+    isVsCpu,
+    player1Mark,
+    isWinnerX,
+    isOver,
+    setBannerShown,
+    reversePlayer1Mark,
+    startGame,
+    setDefault,
+    cpuMakeMove,
+  ] = store.useGameStore((state) => [
+    state.isVsCpu,
+    state.player1Mark,
+    state.banner.isWinnerX,
+    state.banner.isOver,
+    state.setBannerShown,
+    state.reversePlayer1Mark,
+    state.startGame,
+    state.setDefault,
+    state.cpuMakeMove,
+  ]);
+
   return (
     <>
       {/* Overlay */}
@@ -11,18 +34,19 @@ export default function ({ game, handleEndScreenClick }) {
       <div className="absolute top-0 left-0 flex h-full w-full items-center">
         <div className="w-full bg-neutral-700">
           {/* Banner Content */}
-          {banner.isWinnerX !== null ? (
+          {isWinnerX !== null ? (
+            // End Banner
             <div className="mx-auto flex flex-col items-center space-y-4 px-3 pt-10 pb-12">
               {/* Top text */}
               <span className="text-2XS font-bold leading-4.5 tracking-0.875 text-neutral-200 md:text-XS md:tracking-1">
                 {(() => {
-                  if (game.isVsCpu) {
-                    if (banner.isWinnerX && game.player1Mark === "X") {
+                  if (isVsCpu) {
+                    if (isWinnerX && player1Mark === "X") {
                       return "YOU WON!";
                     }
                     return "OH NO, YOU LOST…";
                   }
-                  if (banner.isWinnerX && game.player1Mark === "X") {
+                  if (isWinnerX && player1Mark === "X") {
                     return "PLAYER 1 WINS!";
                   }
                   return "PLAYER 2 WINS!";
@@ -32,14 +56,14 @@ export default function ({ game, handleEndScreenClick }) {
               <div className="flex w-full flex-row justify-center space-x-2.5">
                 <span className="grid aspect-square max-w-[80px] basis-test place-items-center md:w-auto">
                   <img
-                    src={banner.isWinnerX ? iconX : iconO}
-                    alt={banner.isWinnerX ? "X" : "O"}
+                    src={isWinnerX ? iconX : iconO}
+                    alt={isWinnerX ? "X" : "O"}
                   />
                 </span>
                 <div className="my-auto">
                   <span
                     className={`flex text-M font-bold tracking-1.5 md:text-L md:tracking-2.5 ${
-                      banner.isWinnerX ? "text-aqua-600" : "text-orange-600"
+                      isWinnerX ? "text-aqua-600" : "text-orange-600"
                     }`}
                   >
                     TAKES THE ROUND
@@ -51,7 +75,7 @@ export default function ({ game, handleEndScreenClick }) {
                 <button
                   className="rounded-sxl bg-neutral-200 px-4 py-3 shadow-neutralShadowThin active:bg-neutral-100"
                   onClick={() => {
-                    handleEndScreenClick("quit");
+                    setDefault();
                   }}
                 >
                   <span className="text-XS font-bold uppercase tracking-1 text-neutral-900">
@@ -60,7 +84,11 @@ export default function ({ game, handleEndScreenClick }) {
                 </button>
                 <button
                   className="rounded-sxl bg-orange-600 px-4 py-3 shadow-orangeShadowThin active:bg-orange-400"
-                  onClick={() => handleEndScreenClick("next")}
+                  onClick={() => {
+                    startGame();
+                    reversePlayer1Mark();
+                    cpuMakeMove();
+                  }}
                 >
                   <span className="text-XS font-bold uppercase text-neutral-900">
                     NEXT ROUND
@@ -69,29 +97,32 @@ export default function ({ game, handleEndScreenClick }) {
               </div>
             </div>
           ) : (
+            // Restart/Tie Banner
             <div className="mx-auto flex flex-col items-center space-y-4 px-3 pt-14 pb-16">
               <span className="flex text-M font-bold tracking-1.5 text-neutral-200 md:text-L md:tracking-2.5">
-                {banner.isOver ? "ROUND TIED" : "RESTART GAME?"}
+                {isOver ? "ROUND TIED" : "RESTART GAME?"}
               </span>
               <div className="flex flex-row space-x-3.5">
                 <button
                   className="rounded-sxl bg-neutral-200 px-4 py-3 shadow-neutralShadowThin active:bg-neutral-100"
                   onClick={() => {
-                    handleEndScreenClick(banner.isOver ? "quit" : "cancel");
+                    isOver ? setDefault() : setBannerShown(false);
                   }}
                 >
                   <span className="text-XS font-bold uppercase tracking-1 text-neutral-900">
-                    {banner.isOver ? "QUIT" : "NO, CANCEL"}
+                    {isOver ? "QUIT" : "NO, CANCEL"}
                   </span>
                 </button>
                 <button
                   className="rounded-sxl bg-orange-600 px-4 py-3 shadow-orangeShadowThin active:bg-orange-400"
-                  onClick={() =>
-                    handleEndScreenClick(banner.isOver ? "next" : "restart")
-                  }
+                  onClick={() => {
+                    startGame();
+                    isOver && reversePlayer1Mark();
+                    cpuMakeMove();
+                  }}
                 >
                   <span className="text-XS font-bold uppercase text-neutral-900">
-                    {banner.isOver ? "NEXT ROUND" : "YES, RESTART"}
+                    {isOver ? "NEXT ROUND" : "YES, RESTART"}
                   </span>
                 </button>
               </div>

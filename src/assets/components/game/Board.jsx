@@ -5,9 +5,42 @@ import iconOHover from "../../imgs/game-icons/icon-o-outline.svg";
 import iconXHover from "../../imgs/game-icons/icon-x-outline.svg";
 import empty from "../../imgs/game-icons/empty.svg";
 
-export default function ({ game, handleBoardClick }) {
+import store from "../../../store";
+
+export default function () {
+  const [
+    player1Mark,
+    isVsCpu,
+    isXTurn,
+    board,
+    makeMove,
+    setBannerShown,
+    setBannerIsOver,
+    setBannerIsWinnerX,
+  ] = store.useGameStore((state) => [
+    state.player1Mark,
+    state.isVsCpu,
+    state.isXTurn,
+    state.board,
+    state.makeMove,
+    state.setBannerShown,
+    state.setBannerIsOver,
+    state.setBannerIsWinnerX,
+  ]);
+
+  const isCpuMove = () => {
+    if (
+      !isVsCpu ||
+      (player1Mark === "X" && isXTurn === true) ||
+      (player1Mark === "O" && isXTurn === false)
+    ) {
+      return false;
+    }
+    return true;
+  };
+
   // Creates a 3x3 grid of game squares
-  const gameBoard = game.board.map((row, i) => {
+  const gameBoard = board.map((row, i) => {
     return row.map((cell, j) => {
       // finds the correct icon for the cell
       const image = (() => {
@@ -24,7 +57,9 @@ export default function ({ game, handleBoardClick }) {
       return (
         <button
           className="group flex aspect-square justify-center rounded-sxl bg-neutral-700 shadow-darkBlueShadow md:rounded-2xl"
-          onClick={() => handleBoardClick(i, j)}
+          onClick={() => {
+            makeMove(i, j);
+          }}
           key={uuid()}
         >
           <div className="my-auto w-5/12">
@@ -34,7 +69,7 @@ export default function ({ game, handleBoardClick }) {
               className={`block ${cell === null ? "group-hover:hidden" : ""}`}
             />
             <img
-              src={game.isXTurn ? iconXHover : iconOHover}
+              src={isXTurn ? iconXHover : iconOHover}
               alt={cell === null ? "empty cell" : cell}
               className={`hidden ${cell === null ? "group-hover:block" : ""}`}
             />

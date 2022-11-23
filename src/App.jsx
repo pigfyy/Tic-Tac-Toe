@@ -4,5 +4,5 @@ import store from "./store";
 
 export default function App() {
   const isStarted = store.useGameStore((state) => state.isStarted);
-  return <>{isStarted === "4" ? <Game /> : <NewGameMenu />}</>;
+  return <>{isStarted === true ? <Game /> : <NewGameMenu />}</>;
 }
