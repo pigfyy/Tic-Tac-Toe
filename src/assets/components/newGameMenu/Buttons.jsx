@@ -17,9 +17,8 @@ export default function () {
       <button
         className="group w-full rounded-2xl bg-orange-600 py-4 shadow-orangeShadow active:bg-orange-400"
         onClick={() => {
-          startGame();
           setIsVsCpu(true);
-          cpuMakeMove();
+          startGame();
         }}
       >
         <p className="text-XS font-bold uppercase tracking-1 text-neutral-900">

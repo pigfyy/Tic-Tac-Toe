@@ -85,9 +85,8 @@ export default function () {
                 <button
                   className="rounded-sxl bg-orange-600 px-4 py-3 shadow-orangeShadowThin active:bg-orange-400"
                   onClick={() => {
-                    startGame();
                     reversePlayer1Mark();
-                    cpuMakeMove();
+                    startGame();
                   }}
                 >
                   <span className="text-XS font-bold uppercase text-neutral-900">
@@ -116,9 +115,8 @@ export default function () {
                 <button
                   className="rounded-sxl bg-orange-600 px-4 py-3 shadow-orangeShadowThin active:bg-orange-400"
                   onClick={() => {
-                    startGame();
                     isOver && reversePlayer1Mark();
-                    cpuMakeMove();
+                    startGame();
                   }}
                 >
                   <span className="text-XS font-bold uppercase text-neutral-900">

@@ -13,54 +13,62 @@ const isCpuMove = (player1Mark, isVsCpu, isXTurn) => {
   return true;
 };
 
-const isWon = (board) => {
-  // Check Rows
-  for (let i = 0; i < 3; i++) {
-    if (
-      board[i][0] === board[i][1] &&
-      board[i][1] === board[i][2] &&
-      board[i][0] !== null
-    ) {
-      return true;
-    }
-  }
-  // Check Columns
-  for (let i = 0; i < 3; i++) {
-    if (
-      board[0][i] === board[1][i] &&
-      board[1][i] === board[2][i] &&
-      board[0][i] !== null
-    ) {
-      return true;
-    }
-  }
-  // Check Diagonals
-  if (
-    board[0][0] === board[1][1] &&
-    board[1][1] === board[2][2] &&
-    board[0][0] !== null
-  ) {
-    return true;
-  }
-  if (
-    board[0][2] === board[1][1] &&
-    board[1][1] === board[2][0] &&
-    board[0][2] !== null
-  ) {
-    return true;
-  }
-  return false;
-};
-
-const isDraw = (board) => {
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      if (board[i][j] === null) {
-        return false;
+const gameOver = (board) => {
+  const isWon = (board) => {
+    // Check Rows
+    for (let i = 0; i < 3; i++) {
+      if (
+        board[i][0] === board[i][1] &&
+        board[i][1] === board[i][2] &&
+        board[i][0] !== null
+      ) {
+        return true;
       }
     }
+    // Check Columns
+    for (let i = 0; i < 3; i++) {
+      if (
+        board[0][i] === board[1][i] &&
+        board[1][i] === board[2][i] &&
+        board[0][i] !== null
+      ) {
+        return true;
+      }
+    }
+    // Check Diagonals
+    if (
+      board[0][0] === board[1][1] &&
+      board[1][1] === board[2][2] &&
+      board[0][0] !== null
+    ) {
+      return true;
+    }
+    if (
+      board[0][2] === board[1][1] &&
+      board[1][1] === board[2][0] &&
+      board[0][2] !== null
+    ) {
+      return true;
+    }
+    return false;
+  };
+  const isDraw = (board) => {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (board[i][j] === null) {
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+  if (isWon(board)) {
+    return "W";
+  } else if (isDraw(board)) {
+    return "D";
+  } else {
+    return null;
   }
-  return true;
 };
 
 const gameStore = (set, get) => ({
@@ -68,6 +76,7 @@ const gameStore = (set, get) => ({
   isStarted: false,
   isVsCpu: false,
   isXTurn: true,
+  // make isCpuTurn, derived from isVsCpu and isXTurn
   board: [
     [null, null, null],
     [null, null, null],
@@ -105,13 +114,15 @@ const gameStore = (set, get) => ({
       },
     });
   },
+  // reverses player1Mark, used to swap player 1 between games
   reversePlayer1Mark: () => {
     return set({
       player1Mark: get().player1Mark === "X" ? "O" : "X",
     });
   },
+  // resets board, and creates new game
   startGame: () => {
-    return set({
+    set({
       isStarted: true,
       isXTurn: true,
       board: [
@@ -125,29 +136,29 @@ const gameStore = (set, get) => ({
         isWinnerX: null,
       },
     });
+    if (isCpuMove(get().player1Mark, get().isVsCpu, get().isXTurn)) {
+      get().cpuMakeMove();
+    }
   },
+  // makes a move, given a row and column
   makeMove: (row, col) => {
     const [newBoard, isXTurn] = [get().board, get().isXTurn];
     newBoard[row][col] = isXTurn ? "X" : "O";
     set({ board: newBoard, isXTurn: !isXTurn });
-    if (isWon(get().board)) {
+    const isOver = gameOver(get().board);
+    if (isOver) {
+      console.log(isOver);
+      console.log(!get().isXTurn ? "X" : "O");
+      get().setBannerIsWinnerX(!get().isXTurn ? true : false);
       get().setBannerShown(true);
       get().setBannerIsOver(true);
-      get().setBannerIsWinnerX(isXTurn);
-    } else if (isDraw(get().board)) {
-      get().setBannerShown(true);
-      get().setBannerIsOver(true);
+      return;
     }
-    get().cpuMakeMove();
-    if (isWon(get().board)) {
-      get().setBannerShown(true);
-      get().setBannerIsOver(true);
-      get().setBannerIsWinnerX(isXTurn);
-    } else if (isDraw(get().board)) {
-      get().setBannerShown(true);
-      get().setBannerIsOver(true);
+    if (isCpuMove(get().player1Mark, get().isVsCpu, get().isXTurn)) {
+      get().cpuMakeMove();
     }
   },
+  // set game to initial values
   setDefault: () => {
     return set({
       player1Mark: "O",
@@ -166,6 +177,7 @@ const gameStore = (set, get) => ({
       },
     });
   },
+  // if is cpu turn, make cpu move
   cpuMakeMove: () => {
     if (!isCpuMove(get().player1Mark, get().isVsCpu, get().isXTurn)) {
       return;
