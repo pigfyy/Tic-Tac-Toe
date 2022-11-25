@@ -1,17 +1,7 @@
 import create from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import cpuMove from "./assets/util/cpuMove";
-
-const isCpuMove = (player1Mark, isVsCpu, isXTurn) => {
-  if (
-    !isVsCpu ||
-    (player1Mark === "X" && isXTurn === true) ||
-    (player1Mark === "O" && isXTurn === false)
-  ) {
-    return false;
-  }
-  return true;
-};
+import isCpuMove from "./assets/util/isCpuMove";
 
 const gameOver = (board) => {
   const isWon = (board) => {
@@ -141,35 +131,44 @@ const gameStore = (set, get) => ({
     }
   },
   // ends game
-  endGame: () => {
-    get().setBannerIsWinnerX(!get().isXTurn ? true : false);
+  endGame: (overType) => {
+    get().setBannerIsWinnerX(overType === "W" ? !get().isXTurn : null);
     get().setBannerShown(true);
     get().setBannerIsOver(true);
 
-    const didXWin = !get().isXTurn;
-    console.log("Did X WIN:", didXWin);
-    console.log(`is player1Mark X: ${get().player1Mark === "X"}`);
+    if (overType === "D") {
+      useWinCountsStore.getState().addDraw();
+      return;
+    }
 
-    if (
+    const didXWin = !get().isXTurn;
+    const didP1Win =
       (didXWin && get().player1Mark === "X") ||
-      (!didXWin && get().player1Mark !== "X")
-    ) {
+      (!didXWin && get().player1Mark !== "X");
+    if (didP1Win) {
       useWinCountsStore.getState().addP1Win();
     } else {
       useWinCountsStore.getState().addP2Win();
     }
   },
   // makes a move, given a row and column
-  makeMove: (row, col) => {
-    const [newBoard, isXTurn] = [get().board, get().isXTurn];
-    if (newBoard[row][col] !== null) {
+  makeMove: (row, col, isPlayerMove) => {
+    if (
+      (isPlayerMove &&
+        isCpuMove(get().player1Mark, get().isVsCpu, get().isXTurn)) ||
+      get().board[row][col] !== null ||
+      get().banner.isOver
+    ) {
       return;
     }
+    const [newBoard, isXTurn] = [get().board, get().isXTurn];
     newBoard[row][col] = isXTurn ? "X" : "O";
     set({ board: newBoard, isXTurn: !isXTurn });
     const isOver = gameOver(get().board);
     if (isOver) {
-      get().endGame();
+      setTimeout(() => {
+        get().endGame(isOver);
+      }, 50);
       return;
     }
     if (isCpuMove(get().player1Mark, get().isVsCpu, get().isXTurn)) {
@@ -201,7 +200,9 @@ const gameStore = (set, get) => ({
       return;
     }
     const cpuMoveIndex = cpuMove(get().board);
-    get().makeMove(cpuMoveIndex[0], cpuMoveIndex[1]);
+    setTimeout(() => {
+      get().makeMove(cpuMoveIndex[0], cpuMoveIndex[1]);
+    }, 200);
   },
 });
 

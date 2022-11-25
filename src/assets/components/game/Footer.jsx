@@ -11,10 +11,6 @@ export default function () {
 
   const footerBlocks = (() => {
     const winCounts = isVsCpu ? numOfWins.pvc : numOfWins.pvp;
-    const player1Index = player1Mark === "X" ? 0 : 2;
-    console.log(player1Index);
-    console.log(`winCounts: ${winCounts}`);
-
     return winCounts.map((num, i) => {
       const values = (() => {
         switch (i) {

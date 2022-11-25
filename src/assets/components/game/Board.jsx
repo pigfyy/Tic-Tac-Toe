@@ -4,8 +4,8 @@ import iconX from "../../imgs/game-icons/icon-x.svg";
 import iconOHover from "../../imgs/game-icons/icon-o-outline.svg";
 import iconXHover from "../../imgs/game-icons/icon-x-outline.svg";
 import empty from "../../imgs/game-icons/empty.svg";
-
 import store from "../../../store";
+import isCpuMove from "../../util/isCpuMove";
 
 export default function () {
   const [
@@ -58,7 +58,7 @@ export default function () {
         <button
           className="group flex aspect-square justify-center rounded-sxl bg-neutral-700 shadow-darkBlueShadow md:rounded-2xl"
           onClick={() => {
-            makeMove(i, j);
+            makeMove(i, j, true);
           }}
           key={uuid()}
         >
@@ -71,7 +71,11 @@ export default function () {
             <img
               src={isXTurn ? iconXHover : iconOHover}
               alt={cell === null ? "empty cell" : cell}
-              className={`hidden ${cell === null ? "group-hover:block" : ""}`}
+              className={`hidden ${
+                cell === null && !isCpuMove(player1Mark, isVsCpu, isXTurn)
+                  ? "group-hover:block"
+                  : ""
+              }`}
             />
           </div>
         </button>
