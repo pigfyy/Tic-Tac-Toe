@@ -2,19 +2,6 @@ import { v4 as uuid } from "uuid";
 import store from "../../../store";
 
 export default function () {
-  const game = {
-    player1Mark: "O",
-    isStarted: false,
-    isVsCpu: false,
-    isXTurn: true,
-    board: [[], [], []],
-    banner: {
-      isShown: false,
-      isOver: false,
-      isWinnerX: null,
-    },
-  };
-
   const [isVsCpu, player1Mark] = store.useGameStore((state) => [
     state.isVsCpu,
     state.player1Mark,
@@ -23,7 +10,11 @@ export default function () {
   const numOfWins = store.useWinCountsStore((state) => state);
 
   const footerBlocks = (() => {
-    const winCounts = game.isVsCpu ? numOfWins.pvc : numOfWins.pvp;
+    const winCounts = isVsCpu ? numOfWins.pvc : numOfWins.pvp;
+    const player1Index = player1Mark === "X" ? 0 : 2;
+    console.log(player1Index);
+    console.log(`winCounts: ${winCounts}`);
+
     return winCounts.map((num, i) => {
       const values = (() => {
         switch (i) {
@@ -37,12 +28,14 @@ export default function () {
                 : player1Mark === "X"
                 ? "X (P1)"
                 : "X (P2)",
+              num: player1Mark === "X" ? winCounts[0] : winCounts[2],
             };
 
           case 1:
             return {
               bg: "bg-neutral-200",
               text: "TIES",
+              num: winCounts[1],
             };
 
           case 2:
@@ -55,12 +48,14 @@ export default function () {
                 : player1Mark === "O"
                 ? "O (P1)"
                 : "O (P2)",
+              num: player1Mark === "X" ? winCounts[2] : winCounts[0],
             };
 
           default:
             return {
               bg: "bg-neutral-900",
               text: "ERROR",
+              num: "ERROR",
             };
         }
       })();
@@ -78,7 +73,7 @@ export default function () {
               </div>
               <div>
                 <span className="text-S font-bold leading-tight tracking-1.25 text-neutral-900">
-                  {num}
+                  {values.num}
                 </span>
               </div>
             </div>

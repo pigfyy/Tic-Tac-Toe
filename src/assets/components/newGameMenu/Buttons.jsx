@@ -28,8 +28,8 @@ export default function () {
       <button
         className="group w-full rounded-2xl bg-aqua-600 py-4 shadow-aquaShadow active:bg-aqua-400"
         onClick={() => {
-          startGame();
           setIsVsCpu(false);
+          startGame();
         }}
       >
         <p className="text-XS font-bold uppercase tracking-1 text-neutral-900">

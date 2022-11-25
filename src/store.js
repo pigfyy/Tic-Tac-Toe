@@ -140,18 +140,36 @@ const gameStore = (set, get) => ({
       get().cpuMakeMove();
     }
   },
+  // ends game
+  endGame: () => {
+    get().setBannerIsWinnerX(!get().isXTurn ? true : false);
+    get().setBannerShown(true);
+    get().setBannerIsOver(true);
+
+    const didXWin = !get().isXTurn;
+    console.log("Did X WIN:", didXWin);
+    console.log(`is player1Mark X: ${get().player1Mark === "X"}`);
+
+    if (
+      (didXWin && get().player1Mark === "X") ||
+      (!didXWin && get().player1Mark !== "X")
+    ) {
+      useWinCountsStore.getState().addP1Win();
+    } else {
+      useWinCountsStore.getState().addP2Win();
+    }
+  },
   // makes a move, given a row and column
   makeMove: (row, col) => {
     const [newBoard, isXTurn] = [get().board, get().isXTurn];
+    if (newBoard[row][col] !== null) {
+      return;
+    }
     newBoard[row][col] = isXTurn ? "X" : "O";
     set({ board: newBoard, isXTurn: !isXTurn });
     const isOver = gameOver(get().board);
     if (isOver) {
-      console.log(isOver);
-      console.log(!get().isXTurn ? "X" : "O");
-      get().setBannerIsWinnerX(!get().isXTurn ? true : false);
-      get().setBannerShown(true);
-      get().setBannerIsOver(true);
+      get().endGame();
       return;
     }
     if (isCpuMove(get().player1Mark, get().isVsCpu, get().isXTurn)) {
@@ -187,16 +205,32 @@ const gameStore = (set, get) => ({
   },
 });
 
-const useGameStore = create(
-  devtools(
-    // persist(gameStore, { name: "game" })
-    gameStore
-  )
-);
+const useGameStore = create(devtools(persist(gameStore, { name: "game" })));
 
 const winCountsStore = (set) => ({
   pvc: [0, 0, 0],
   pvp: [0, 0, 0],
+  addP1Win: () => {
+    set((state) => {
+      const [pvc, pvp] = [state.pvc, state.pvp];
+      useGameStore.getState().isVsCpu ? pvc[0]++ : pvp[0]++;
+      return { pvc, pvp };
+    });
+  },
+  addP2Win: () => {
+    set((state) => {
+      const [pvc, pvp] = [state.pvc, state.pvp];
+      useGameStore.getState().isVsCpu ? pvc[2]++ : pvp[2]++;
+      return { pvc, pvp };
+    });
+  },
+  addDraw: () => {
+    set((state) => {
+      const [pvc, pvp] = [state.pvc, state.pvp];
+      useGameStore.getState().isVsCpu ? pvc[1]++ : pvp[1]++;
+      return { pvc, pvp };
+    });
+  },
 });
 
 const useWinCountsStore = create(
