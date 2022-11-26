@@ -3,9 +3,10 @@ import iconO from "../../imgs/game-icons/icon-o.svg";
 import iconX from "../../imgs/game-icons/icon-x.svg";
 import iconOHover from "../../imgs/game-icons/icon-o-outline.svg";
 import iconXHover from "../../imgs/game-icons/icon-x-outline.svg";
+import iconODark from "../../imgs/game-icons/icon-o-dark.svg";
+import iconXDark from "../../imgs/game-icons/icon-x-dark.svg";
 import empty from "../../imgs/game-icons/empty.svg";
 import store from "../../../store";
-import isCpuMove from "../../util/isCpuMove";
 
 export default function () {
   const [
@@ -49,14 +50,33 @@ export default function () {
             return iconX;
           case "O":
             return iconO;
+          case "oWin":
+            return iconODark;
+          case "xWin":
+            return iconXDark;
           default:
             return empty;
         }
       })();
 
+      const bgColor = (() => {
+        switch (cell) {
+          case "X":
+            return "bg-neutral-700";
+          case "O":
+            return "bg-neutral-700";
+          case "oWin":
+            return "bg-orange-600";
+          case "xWin":
+            return "bg-aqua-600";
+          default:
+            return "bg-neutral-700";
+        }
+      })();
+
       return (
         <button
-          className="group flex aspect-square justify-center rounded-sxl bg-neutral-700 shadow-darkBlueShadow md:rounded-2xl"
+          className={`group flex aspect-square justify-center rounded-sxl shadow-darkBlueShadow md:rounded-2xl ${bgColor}`}
           onClick={() => {
             makeMove(i, j, true);
           }}

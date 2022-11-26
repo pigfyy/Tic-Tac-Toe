@@ -3,8 +3,9 @@ import { devtools, persist } from "zustand/middleware";
 import cpuMove from "./assets/util/cpuMove";
 import isCpuMove from "./assets/util/isCpuMove";
 
-const gameOver = (board) => {
-  const isWon = (board) => {
+const gameOver = (board, setBoard) => {
+  const checkWin = (board) => {
+    let newBoard = board;
     // Check Rows
     for (let i = 0; i < 3; i++) {
       if (
@@ -12,6 +13,11 @@ const gameOver = (board) => {
         board[i][1] === board[i][2] &&
         board[i][0] !== null
       ) {
+        const cellName = `${board[i][0] === "X" ? "x" : "o"}Win`;
+        newBoard[i][0] = cellName;
+        newBoard[i][1] = cellName;
+        newBoard[i][2] = cellName;
+        setBoard(newBoard);
         return true;
       }
     }
@@ -22,6 +28,11 @@ const gameOver = (board) => {
         board[1][i] === board[2][i] &&
         board[0][i] !== null
       ) {
+        const cellName = `${board[0][i] === "X" ? "x" : "o"}Win`;
+        newBoard[0][i] = cellName;
+        newBoard[1][i] = cellName;
+        newBoard[2][i] = cellName;
+        setBoard(newBoard);
         return true;
       }
     }
@@ -31,6 +42,11 @@ const gameOver = (board) => {
       board[1][1] === board[2][2] &&
       board[0][0] !== null
     ) {
+      const cellName = `${board[0][0] === "X" ? "x" : "o"}Win`;
+      newBoard[0][0] = cellName;
+      newBoard[1][1] = cellName;
+      newBoard[2][2] = cellName;
+      setBoard(newBoard);
       return true;
     }
     if (
@@ -38,11 +54,16 @@ const gameOver = (board) => {
       board[1][1] === board[2][0] &&
       board[0][2] !== null
     ) {
+      const cellName = `${board[0][2] === "X" ? "x" : "o"}Win`;
+      newBoard[0][2] = cellName;
+      newBoard[1][1] = cellName;
+      newBoard[2][0] = cellName;
+      setBoard(newBoard);
       return true;
     }
     return false;
   };
-  const isDraw = (board) => {
+  const checkDraw = (board) => {
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
         if (board[i][j] === null) {
@@ -52,9 +73,10 @@ const gameOver = (board) => {
     }
     return true;
   };
-  if (isWon(board)) {
+  const isWon = checkWin(board);
+  if (isWon) {
     return "W";
-  } else if (isDraw(board)) {
+  } else if (checkDraw(board)) {
     return "D";
   } else {
     return null;
@@ -80,6 +102,7 @@ const gameStore = (set, get) => ({
   setPlayer1Mark: (mark) => set({ player1Mark: mark }),
   setIsStarted: (isStarted) => set({ isStarted }),
   setIsVsCpu: (isVsCpu) => set({ isVsCpu }),
+  setBoard: (board) => set({ board }),
   setBannerShown: (isShown) => {
     return set({
       banner: {
@@ -132,15 +155,16 @@ const gameStore = (set, get) => ({
   },
   // ends game
   endGame: (overType) => {
+    // show banner, and set winner
     get().setBannerIsWinnerX(overType === "W" ? !get().isXTurn : null);
     get().setBannerShown(true);
     get().setBannerIsOver(true);
 
+    // change win counts
     if (overType === "D") {
       useWinCountsStore.getState().addDraw();
       return;
     }
-
     const didXWin = !get().isXTurn;
     const didP1Win =
       (didXWin && get().player1Mark === "X") ||
@@ -164,11 +188,9 @@ const gameStore = (set, get) => ({
     const [newBoard, isXTurn] = [get().board, get().isXTurn];
     newBoard[row][col] = isXTurn ? "X" : "O";
     set({ board: newBoard, isXTurn: !isXTurn });
-    const isOver = gameOver(get().board);
-    if (isOver) {
-      setTimeout(() => {
-        get().endGame(isOver);
-      }, 50);
+    const overType = gameOver(get().board, get().setBoard);
+    if (overType) {
+      get().endGame(overType);
       return;
     }
     if (isCpuMove(get().player1Mark, get().isVsCpu, get().isXTurn)) {
@@ -206,7 +228,8 @@ const gameStore = (set, get) => ({
   },
 });
 
-const useGameStore = create(devtools(persist(gameStore, { name: "game" })));
+// const useGameStore = create(devtools(persist(gameStore, { name: "game" })));
+const useGameStore = create(devtools(gameStore));
 
 const winCountsStore = (set) => ({
   pvc: [0, 0, 0],
